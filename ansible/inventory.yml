@@ -7,7 +7,7 @@ all:
     # The username you want to use to login to those machines (and your public key will be added to).
     user: satoshi
     # The initial username to login with, for fresh nodes that may not have your username setup.
-    ansible_user: ubuntu
+    ansible_user: satoshi
     # The default validator each GPU worker node will be assigned to.
     validator: 5Dt7HZ7Zpw4DppPxFM7Ke3Cm7sDAWhsZXmM5ZAmE7dSVJbcQ
     # By default, no nodes are the primary (CPU node running all the apps, wireguard, etc.) Override this flag exactly once below.
@@ -17,7 +17,7 @@ all:
     # The port you'll be using for the registry proxy, MUST MATCH chart/values.yaml registry.service.nodePort!
     registry_port: 30500
     # SSH sometimes just hangs without this...
-    ansible_ssh_common_args: '-o ControlPath=none'
+    ansible_ssh_common_args: '-o ControlPath=none -o ProxyJump=satoshi@10.2.155.23'
     # SSH retries...
     ansible_ssh_retries: 3
     # Ubuntu major/minor version.
@@ -37,22 +37,14 @@ all:
   hosts:
     # This would be the main node, which runs postgres, redis, gepetto, etc.
     chutes-miner-cpu-0:
-      ansible_host: 1.0.0.0
-      external_ip: 1.0.0.0
-      wireguard_ip: 192.168.0.1
+      ansible_host: 192.168.122.28  # VM’s local IP
+      external_ip: 192.168.122.28   # For testing; replace with public IP later
+      wireguard_ip: 192.168.0.1 
       gpu_enabled: false
       is_primary: true
 
     # These are the GPU nodes, which actually run the chutes.
     chutes-miner-gpu-0:
-      ansible_host: 1.0.0.1
-      external_ip: 1.0.0.1
-      wireguard_ip: 192.168.0.3
-    chutes-miner-gpu-1:
-      ansible_host: 1.0.0.2
-      external_ip: 1.0.0.2
-      wireguard_ip: 192.168.0.4
-    chutes-miner-gpu-2:
-      ansible_host: 1.0.0.3
-      external_ip: 1.0.0.3
-      wireguard_ip: 192.168.0.5
+      ansible_host: 192.168.122.136  # VM’s local IP
+      external_ip: 192.168.122.136   # For testing; replace with public IP later
+      wireguard_ip: 192.168.0.3 
