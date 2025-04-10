@@ -36,7 +36,7 @@ all:
 
   hosts:
     # This would be the main node, which runs postgres, redis, gepetto, etc.
-    chutes-miner-cpu-0:
+    chutes-manager:
       ansible_host: 192.168.122.28  # VM’s local IP
       external_ip: 192.168.122.28   # For testing; replace with public IP later
       wireguard_ip: 192.168.0.1 
@@ -44,15 +44,15 @@ all:
       is_primary: true
 
     # These are the GPU nodes, which actually run the chutes.
-    chutes-miner-gpu-0:
+    chutes-4090-0:
       ansible_host: 192.168.122.136  # VM’s local IP
       external_ip: 192.168.122.136   # For testing
       wireguard_ip: 192.168.0.3 
-    chutes-miner-gpu-1:
+    chutes-4090-1:
       ansible_host: 192.168.122.104  # VM’s local IP
       external_ip: 192.168.122.104   # For testing
       wireguard_ip: 192.168.0.4 
-    chutes-miner-gpu-2:
+    chutes-4090-2:
       ansible_host: 192.168.122.93  # VM’s local IP
       external_ip: 192.168.122.93   # For testing
       wireguard_ip: 192.168.0.5 
