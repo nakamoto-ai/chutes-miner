@@ -46,5 +46,13 @@ all:
     # These are the GPU nodes, which actually run the chutes.
     chutes-miner-gpu-0:
       ansible_host: 192.168.122.136  # VM’s local IP
-      external_ip: 192.168.122.136   # For testing; replace with public IP later
+      external_ip: 192.168.122.136   # For testing
       wireguard_ip: 192.168.0.3 
+    chutes-miner-gpu-1:
+      ansible_host: 192.168.122.104  # VM’s local IP
+      external_ip: 192.168.122.104   # For testing
+      wireguard_ip: 192.168.0.4 
+    chutes-miner-gpu-2:
+      ansible_host: 192.168.122.93  # VM’s local IP
+      external_ip: 192.168.122.93   # For testing
+      wireguard_ip: 192.168.0.5 
