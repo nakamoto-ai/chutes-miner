@@ -36,7 +36,7 @@ all:
 
   hosts:
     chutes-manager:
-      ansible_host: 50.237.5.44 
+      ansible_host: 10.2.155.21
       external_ip: 50.237.5.44
       wireguard_ip: 192.168.0.1 
       gpu_enabled: false
@@ -44,14 +44,14 @@ all:
 
     # 4090 enabled VMs
     chutes-4090-0:
-      ansible_host: 50.237.5.41 
+      ansible_host: 10.2.155.24
       external_ip: 50.237.5.41
       wireguard_ip: 192.168.0.3 
     chutes-4090-1:
-      ansible_host: 50.237.5.42 
+      ansible_host: 10.2.155.25 
       external_ip: 50.237.5.42
       wireguard_ip: 192.168.0.4 
     chutes-4090-2:
-      ansible_host: 50.237.5.43 
+      ansible_host: 10.2.155.26 
       external_ip: 50.237.5.43
       wireguard_ip: 192.168.0.5 
