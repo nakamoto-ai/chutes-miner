@@ -44,7 +44,7 @@ all:
 
     # 4090 enabled VMs
     chutes-4090-0:
-      ansible_host: 50.237,5.41 
+      ansible_host: 50.237.5.41 
       external_ip: 50.237.5.41
       wireguard_ip: 192.168.0.3 
     chutes-4090-1:
