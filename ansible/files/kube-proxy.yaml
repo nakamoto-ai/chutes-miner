@@ -39,6 +39,8 @@ spec:
         hostPath:
           path: /run/xtables.lock
           type: FileOrCreate
+      tolerations: 
+        - operator: "Exists"
 ---
 apiVersion: v1
 kind: ConfigMap
