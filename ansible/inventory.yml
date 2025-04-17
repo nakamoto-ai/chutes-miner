@@ -32,22 +32,28 @@ all:
     ipv6_enabled: true
     # Default MTU
     wireguard_mtu: 1380
+    wiregaurd_enabled: false # by default dont use wiregaurd because our nodes are on the same LAN
 
   hosts:
     chutes-manager:
       ansible_host: 10.2.155.101
       external_ip: 50.237.5.24
       wireguard_ip: 192.168.0.1
+      internal_ip: 10.2.155.101
       gpu_enabled: false
       is_primary: true
+      #wiregaurd_enabled: true # uncomment once we add nodes that will need wiregaurd
 
     # 4090 enabled VMs
     chutes-4090-0:
       ansible_host: 10.2.155.102
       external_ip: 50.237.5.25
+      internal_ip: 10.2.155.102
     chutes-4090-1:
       ansible_host: 10.2.155.103
       external_ip: 50.237.5.26
+      internal_ip: 10.2.155.103
     chutes-4090-2:
       ansible_host: 10.2.155.104
       external_ip: 50.237.5.23
+      internal_ip: 10.2.155.104
