@@ -16,7 +16,7 @@ all:
     # The port you'll be using for the registry proxy, MUST MATCH chart/values.yaml registry.service.nodePort!
     registry_port: 30500
     # SSH sometimes just hangs without this...
-    ansible_ssh_common_args: '-o ControlPath=none'
+    ansible_ssh_common_args: "-o ControlPath=none"
     # SSH retries...
     ansible_ssh_retries: 3
     # Ubuntu major/minor version.
@@ -37,7 +37,7 @@ all:
     chutes-manager:
       ansible_host: 10.2.155.101
       external_ip: 50.237.5.24
-      wireguard_ip: 192.168.0.1 
+      wireguard_ip: 192.168.0.1
       gpu_enabled: false
       is_primary: true
 
@@ -45,12 +45,9 @@ all:
     chutes-4090-0:
       ansible_host: 10.2.155.102
       external_ip: 50.237.5.25
-      wireguard_ip: 192.168.0.3 
     chutes-4090-1:
       ansible_host: 10.2.155.103
       external_ip: 50.237.5.26
-      wireguard_ip: 192.168.0.4 
     chutes-4090-2:
       ansible_host: 10.2.155.104
       external_ip: 50.237.5.23
-      wireguard_ip: 192.168.0.5 

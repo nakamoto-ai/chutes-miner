@@ -1,4 +1,4 @@
-createPasswords: false  # XXX only ever set to true one time (first time)!!!
+createPasswords: false # XXX only ever set to true one time (first time)!!!
 
 cache:
   max_age_days: 30
@@ -37,10 +37,10 @@ minerApi:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
-        - matchExpressions:
-          - key: nvidia.com/gpu.present
-            operator: NotIn
-            values: ["true"]
+          - matchExpressions:
+              - key: nvidia.com/gpu.present
+                operator: NotIn
+                values: ["true"]
   tolerations: []
 
 squid:
@@ -73,10 +73,10 @@ gepetto:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
-        - matchExpressions:
-          - key: nvidia.com/gpu.present
-            operator: NotIn
-            values: ["true"]
+          - matchExpressions:
+              - key: nvidia.com/gpu.present
+                operator: NotIn
+                values: ["true"]
   tolerations: []
 
 postgres:
@@ -104,11 +104,11 @@ postgres:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
-        - matchExpressions:
-          - key: kubernetes.io/hostname
-            operator: In
-            values:
-            - chutes-miner-cpu-0
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                  - chutes-manager
   tolerations: []
 
 redis:
@@ -120,10 +120,10 @@ redis:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
-        - matchExpressions:
-          - key: nvidia.com/gpu.present
-            operator: NotIn
-            values: ["true"]
+          - matchExpressions:
+              - key: nvidia.com/gpu.present
+                operator: NotIn
+                values: ["true"]
   tolerations: []
   resources:
     requests:
@@ -171,9 +171,9 @@ registry:
 auditExporter:
   image: parachutes/miner:latest
   nodeSelector:
-    kubernetes.io/hostname: chutes-miner-cpu-0
+    kubernetes.io/hostname: chutes-manager
 
 failedChuteCleanup:
   image: bitnami/kubectl:latest
   nodeSelector:
-    kubernetes.io/hostname: chutes-miner-cpu-0
+    kubernetes.io/hostname: chutes-manager
