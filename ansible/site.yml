@@ -638,6 +638,24 @@
         reload: yes
       when: is_primary | bool
 
+    - name: Check if kube-proxy is deployed
+      shell: |
+        microk8s kubectl get daemonset kube-proxy -n kube-system --no-headers || true
+      register: kube_proxy_status
+      changed_when: false
+      failed_when: false
+
+    - name: Deploy kube-proxy if missing
+      when: kube_proxy_status.stdout == ""
+      block:
+        - name: Copy kube-proxy manifest to node
+          copy:
+            src: files/kube-proxy.yml
+            dest: /tmp/kube-proxy.yml
+
+        - name: Apply kube-proxy manifest
+          shell: microk8s kubectl apply -f /tmp/kube-proxy.yml
+
     - name: Fix containerd
       shell: |
         DISABLED=$(egrep 'disabled_plugins' /etc/containerd/config.toml | grep -v 'disabled_plugins = \[\]')
