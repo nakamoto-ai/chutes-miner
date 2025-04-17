@@ -638,23 +638,44 @@
         reload: yes
       when: is_primary | bool
 
-    - name: Check if kube-proxy is deployed
+    - name: Check if kube-proxy DaemonSet is already deployed
       shell: |
         microk8s kubectl get daemonset kube-proxy -n kube-system --no-headers || true
       register: kube_proxy_status
       changed_when: false
       failed_when: false
+      when: is_primary | bool
 
-    - name: Deploy kube-proxy if missing
+    - name: Deploy kube-proxy prerequisites if missing
       when: kube_proxy_status.stdout == ""
       block:
-        - name: Copy kube-proxy manifest to node
+        - name: Copy kube-proxy RBAC manifest to primary node
           copy:
-            src: files/kube-proxy.yml
-            dest: /tmp/kube-proxy.yml
+            src: files/kube-proxy-rbac.yaml
+            dest: /tmp/kube-proxy-rbac.yaml
+          when: is_primary | bool
 
-        - name: Apply kube-proxy manifest
-          shell: microk8s kubectl apply -f /tmp/kube-proxy.yml
+        - name: Apply kube-proxy RBAC manifest
+          shell: microk8s kubectl apply -f /tmp/kube-proxy-rbac.yaml
+          when: is_primary | bool
+
+        - name: Copy kube-proxy DaemonSet manifest to primary node
+          copy:
+            src: files/kube-proxy.yaml
+            dest: /tmp/kube-proxy.yaml
+          when: is_primary | bool
+
+        - name: Apply kube-proxy DaemonSet manifest
+          shell: microk8s kubectl apply -f /tmp/kube-proxy.yaml
+          when: is_primary | bool
+
+        - name: Wait for kube-proxy pods to be running
+          shell: |
+            microk8s kubectl get pods -n kube-system -l k8s-app=kube-proxy --no-headers | grep -w Running
+          register: kube_proxy_pods
+          retries: 20
+          delay: 10
+          until: kube_proxy_pods.rc == 0
           when: is_primary | bool
 
     - name: Fix containerd
@@ -664,3 +685,36 @@
           perl -pi -e 's/^\s*disabled_plugins\s*=/##disabled_plugins = []/g' /etc/containerd/config.toml
           systemctl restart containerd
         fi
+
+    - name: Create temporary DNS check pod
+      shell: |
+        microk8s kubectl run dns-check --image=busybox --restart=Never --command -- sleep 60
+      args:
+        executable: /bin/bash
+      ignore_errors: yes
+      when: is_primary | bool
+
+    - name: Wait for DNS check pod to be Running
+      shell: |
+        microk8s kubectl get pod dns-check --no-headers | grep -w Running
+      register: dns_check_pod
+      retries: 15
+      delay: 4
+      until: dns_check_pod.rc == 0
+      ignore_errors: yes
+      when: is_primary | bool
+
+    - name: Perform nslookup inside DNS check pod
+      shell: |
+        microk8s kubectl exec dns-check -- nslookup kubernetes.default
+      register: dns_check_result
+      retries: 5
+      delay: 5
+      until: dns_check_result.rc == 0
+      when: is_primary | bool
+
+    - name: Cleanup DNS check pod
+      shell: |
+        microk8s kubectl delete pod dns-check --ignore-not-found=true
+      when: is_primary | bool
+
