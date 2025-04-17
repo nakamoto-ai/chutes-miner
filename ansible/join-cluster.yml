@@ -59,6 +59,12 @@
         - not is_primary | bool
         - cluster_check.rc != 0
 
+    # NOTE: not part of given shutes code
+    - name: Enable kube-proxy on primary
+      shell: microk8s enable kube-proxy
+      when: is_primary | bool
+
+
     - name: Wait for node to be ready
       shell: "microk8s kubectl get nodes {{ item }} --no-headers | grep -w Ready"
       register: node_ready
