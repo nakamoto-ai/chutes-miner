@@ -686,35 +686,36 @@
           systemctl restart containerd
         fi
 
-    - name: Create temporary DNS check pod
+    - name: Create CoreDNS healthcheck pod
       shell: |
-        microk8s kubectl run dns-check --image=busybox --restart=Never --command -- sleep 60
-      args:
-        executable: /bin/bash
-      ignore_errors: yes
+        microk8s kubectl run dns-check \
+          --image=busybox \
+          --restart=Never \
+          --command -- sh -c 'nslookup kubernetes.default.svc.cluster.local'
       when: is_primary | bool
 
-    - name: Wait for DNS check pod to be Running
+    - name: Wait for CoreDNS healthcheck pod to complete
       shell: |
-        microk8s kubectl get pod dns-check --no-headers | grep -w Running
-      register: dns_check_pod
-      retries: 15
-      delay: 4
-      until: dns_check_pod.rc == 0
-      ignore_errors: yes
+        microk8s kubectl wait --for=condition=Succeeded --timeout=60s pod/dns-check -n kube-system
+      register: dns_check_wait
+      retries: 6
+      delay: 10
+      until: dns_check_wait.rc == 0
       when: is_primary | bool
 
-    - name: Perform nslookup inside DNS check pod
+    - name: Fetch CoreDNS healthcheck logs
       shell: |
-        microk8s kubectl exec dns-check -- nslookup kubernetes.default
-      register: dns_check_result
-      retries: 5
-      delay: 5
-      until: dns_check_result.rc == 0
+        microk8s kubectl logs dns-check -n kube-system
+      register: dns_check_logs
       when: is_primary | bool
 
-    - name: Cleanup DNS check pod
+    - name: Validate CoreDNS resolves kubernetes.default
+      fail:
+        msg: "CoreDNS failed to resolve kubernetes.default!"
+      when: "'Name:' not in dns_check_logs.stdout"
+
+    - name: Delete CoreDNS healthcheck pod
       shell: |
-        microk8s kubectl delete pod dns-check --ignore-not-found=true
+        microk8s kubectl delete pod dns-check -n kube-system --ignore-not-found
       when: is_primary | bool
 
