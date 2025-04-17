@@ -655,6 +655,7 @@
 
         - name: Apply kube-proxy manifest
           shell: microk8s kubectl apply -f /tmp/kube-proxy.yml
+          when: is_primary | bool
 
     - name: Fix containerd
       shell: |
