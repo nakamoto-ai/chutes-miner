@@ -647,7 +647,6 @@
       when: is_primary | bool
 
     - name: Deploy kube-proxy prerequisites if missing
-      when: kube_proxy_status.stdout == ""
       block:
         - name: Copy kube-proxy RBAC manifest to primary node
           copy:
@@ -677,6 +676,9 @@
           delay: 10
           until: kube_proxy_pods.rc == 0
           when: is_primary | bool
+      when: 
+        - is_primary | bool
+        - kube_proxy_status.stdout == ""
 
     - name: Fix containerd
       shell: |
