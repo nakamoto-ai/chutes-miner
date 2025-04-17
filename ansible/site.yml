@@ -577,13 +577,19 @@
         state: present
       when: is_primary | bool
 
-    - name: Add forwarding rule
+    #- name: Add forwarding rule
+    #  iptables:
+    #    chain: FORWARD
+    #    in_interface: wg0
+    #    jump: ACCEPT
+    #    state: present
+    #  when: is_primary | bool
+
+    - name: Allow forwarding for all interfaces (especially pod network)
       iptables:
         chain: FORWARD
-        in_interface: wg0
-        jump: ACCEPT
+        policy: ACCEPT
         state: present
-      when: is_primary | bool
 
     - name: Get network interface information
       ansible.builtin.shell: |
