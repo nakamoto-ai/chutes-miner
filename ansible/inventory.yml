@@ -49,11 +49,11 @@ all:
       ansible_host: 10.2.155.102
       external_ip: 50.237.5.25
       internal_ip: 10.2.155.102
-    chutes-4090-1:
-      ansible_host: 10.2.155.103
-      external_ip: 50.237.5.26
-      internal_ip: 10.2.155.103
-    chutes-4090-2:
-      ansible_host: 10.2.155.104
-      external_ip: 50.237.5.23
-      internal_ip: 10.2.155.104
+    #chutes-4090-1:
+    #  ansible_host: 10.2.155.103
+    #  external_ip: 50.237.5.26
+    #  internal_ip: 10.2.155.103
+    #chutes-4090-2:
+    #  ansible_host: 10.2.155.104
+    #  external_ip: 50.237.5.23
+    #  internal_ip: 10.2.155.104
