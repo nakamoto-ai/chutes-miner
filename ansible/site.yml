@@ -585,11 +585,19 @@
     #    state: present
     #  when: is_primary | bool
 
-    - name: Allow forwarding for all interfaces (especially pod network)
+    - name: set FORWARD chain policy to ACCEPT
       iptables:
         chain: FORWARD
         policy: ACCEPT
         state: present
+
+    - name: Allow forwarding from pod interfaces (Calico vxlan + cali)
+      ansible.builtin.shell: |
+        iptables -C FORWARD -i cali+ -j ACCEPT || iptables -A FORWARD -i cali+ -j ACCEPT
+        iptables -C FORWARD -i vxlan.calico -j ACCEPT || iptables -A FORWARD -i vxlan.calico -j ACCEPT
+      args:
+        executable: /bin/bash
+      when: is_primary | bool
 
     - name: Get network interface information
       ansible.builtin.shell: |
@@ -605,6 +613,14 @@
         jump: MASQUERADE
         state: present
       loop: "{{ ethernet_interfaces.stdout_lines }}"
+      when: is_primary | bool
+
+    - name: Add MASQUERADE rule for pod network
+      ansible.builtin.shell: |
+        iptables -t nat -C POSTROUTING -s 10.1.0.0/16 ! -d 10.1.0.0/16 -j MASQUERADE || \
+        iptables -t nat -A POSTROUTING -s 10.1.0.0/16 ! -d 10.1.0.0/16 -j MASQUERADE
+      args:
+        executable: /bin/bash
       when: is_primary | bool
 
     - name: Save iptables rules
