@@ -362,90 +362,6 @@
       shell: microk8s status | grep "microk8s is running" || microk8s start
       changed_when: false
 
-    #- name: Configure wireguard IP for k8s comms
-    #  block:
-    #    - name: Get current kubelet args
-    #      slurp:
-    #        src: /var/snap/microk8s/current/args/kubelet
-    #      register: kubelet_args
-
-    #    - name: Get current kube-apiserver args
-    #      slurp:
-    #        src: /var/snap/microk8s/current/args/kube-apiserver
-    #      register: kubeapi_args
-
-    #    - name: Check if node-ip is already configured
-    #      set_fact:
-    #        has_node_ip: "{{ (kubelet_args.content | b64decode) is regex('--node-ip=') }}"
-
-    #    - name: Check if advertise-addr is already configured
-    #      set_fact:
-    #        has_adv_ip: "{{ (kubeapi_args.content | b64decode) is regex('--advertise-address=') }}"
-
-    #    - name: Add node-ip to kubelet args
-    #      lineinfile:
-    #        path: /var/snap/microk8s/current/args/kubelet
-    #        line: "--node-ip={{ wireguard_ip }}"
-    #        create: yes
-    #      when: not has_node_ip
-    #      register: kubelet_modified
-
-    #    - name: Add advertise-address to kubeapi args
-    #      lineinfile:
-    #        path: /var/snap/microk8s/current/args/kube-apiserver
-    #        line: "--advertise-address={{ wireguard_ip }}"
-    #        create: yes
-    #      when: not has_adv_ip
-    #      register: kubeapi_modified
-
-    #    - name: Restart kubelet if config changed
-    #      systemd:
-    #        name: snap.microk8s.daemon-kubelite
-    #        state: restarted
-    #      when: kubelet_modified.changed or kubeapi_modified.changed
-
-    - name: Configure internal IP for k8s comms
-      block:
-        - name: Get current kubelet args
-          slurp:
-            src: /var/snap/microk8s/current/args/kubelet
-          register: kubelet_args
-
-        - name: Get current kube-apiserver args
-          slurp:
-            src: /var/snap/microk8s/current/args/kube-apiserver
-          register: kubeapi_args
-
-        - name: Check if node-ip is already configured
-          set_fact:
-            has_node_ip: "{{ (kubelet_args.content | b64decode) is regex('--node-ip=') }}"
-
-        - name: Check if advertise-addr is already configured
-          set_fact:
-            has_adv_ip: "{{ (kubeapi_args.content | b64decode) is regex('--advertise-address=') }}"
-
-        - name: Add node-ip to kubelet args
-          lineinfile:
-            path: /var/snap/microk8s/current/args/kubelet
-            line: "--node-ip={{ internal_ip }}"
-            create: yes
-          when: not has_node_ip
-          register: kubelet_modified
-
-        - name: Add advertise-address to kubeapi args
-          lineinfile:
-            path: /var/snap/microk8s/current/args/kube-apiserver
-            line: "--advertise-address={{ internal_ip }}"
-            create: yes
-          when: not has_adv_ip
-          register: kubeapi_modified
-
-        - name: Restart kubelet if config changed
-          systemd:
-            name: snap.microk8s.daemon-kubelite
-            state: restarted
-          when: kubelet_modified.changed or kubeapi_modified.changed
-
     - name: Setup Kubernetes access for user
       block:
         - name: Add user to microk8s group
@@ -577,20 +493,6 @@
         state: present
       when: is_primary | bool
 
-    #- name: Add forwarding rule
-    #  iptables:
-    #    chain: FORWARD
-    #    in_interface: wg0
-    #    jump: ACCEPT
-    #    state: present
-    #  when: is_primary | bool
-
-    - name: set FORWARD chain policy to ACCEPT
-      iptables:
-        chain: FORWARD
-        policy: ACCEPT
-        state: present
-
     - name: Allow forwarding from pod interfaces (Calico vxlan + cali)
       ansible.builtin.shell: |
         iptables -C FORWARD -i cali+ -j ACCEPT || iptables -A FORWARD -i cali+ -j ACCEPT
@@ -638,46 +540,6 @@
         reload: yes
       when: is_primary | bool
 
-    - name: Check if kube-proxy DaemonSet is already deployed
-      shell: |
-        microk8s kubectl get daemonset kube-proxy -n kube-system --no-headers || true
-      register: kube_proxy_status
-      changed_when: false
-      failed_when: false
-      when: is_primary | bool
-
-    - name: Deploy kube-proxy prerequisites
-      block:
-        - name: Copy kube-proxy RBAC manifest to primary node
-          copy:
-            src: files/kube-proxy-rbac.yaml
-            dest: /tmp/kube-proxy-rbac.yaml
-          when: is_primary | bool
-
-        - name: Apply kube-proxy RBAC manifest
-          shell: microk8s kubectl apply -f /tmp/kube-proxy-rbac.yaml
-          when: is_primary | bool
-
-        - name: Copy kube-proxy DaemonSet manifest to primary node
-          copy:
-            src: files/kube-proxy.yaml
-            dest: /tmp/kube-proxy.yaml
-          when: is_primary | bool
-
-        - name: Apply kube-proxy DaemonSet manifest
-          shell: microk8s kubectl apply -f /tmp/kube-proxy.yaml
-          when: is_primary | bool
-
-        - name: Wait for kube-proxy pods to be running
-          shell: |
-            microk8s kubectl get pods -n kube-system -l k8s-app=kube-proxy --no-headers | grep -w Running
-          register: kube_proxy_pods
-          retries: 20
-          delay: 10
-          until: kube_proxy_pods.rc == 0
-          when: is_primary | bool
-      when: is_primary | bool
-
     - name: Fix containerd
       shell: |
         DISABLED=$(egrep 'disabled_plugins' /etc/containerd/config.toml | grep -v 'disabled_plugins = \[\]')
@@ -685,43 +547,3 @@
           perl -pi -e 's/^\s*disabled_plugins\s*=/##disabled_plugins = []/g' /etc/containerd/config.toml
           systemctl restart containerd
         fi
-
-    - name: Ensure dns-check pod is deleted before healthcheck
-      shell: |
-        microk8s kubectl delete pod dns-check -n kube-system --ignore-not-found
-      when: is_primary | bool
-
-    - name: Create CoreDNS healthcheck pod
-      shell: |
-        microk8s kubectl run dns-check \
-          --image=busybox \
-          --restart=Never \
-          --namespace=kube-system \
-          --command -- sh -c 'nslookup kubernetes.default.svc.cluster.local'
-      when: is_primary | bool
-
-    - name: Wait for CoreDNS healthcheck pod to complete
-      shell: |
-        microk8s kubectl wait --for=condition=Succeeded --timeout=60s pod/dns-check -n kube-system
-      register: dns_check_wait
-      retries: 6
-      delay: 10
-      until: dns_check_wait.rc == 0
-      when: is_primary | bool
-
-    - name: Fetch CoreDNS healthcheck logs
-      shell: |
-        microk8s kubectl logs dns-check -n kube-system
-      register: dns_check_logs
-      when: is_primary | bool
-
-    - name: Validate CoreDNS resolves kubernetes.default
-      fail:
-        msg: "CoreDNS failed to resolve kubernetes.default!"
-      when: "'Name:' not in dns_check_logs.stdout"
-
-    - name: Delete dns-check pod after healthcheck
-      shell: |
-        microk8s kubectl delete pod dns-check -n kube-system --ignore-not-found
-      when: is_primary | bool
-
