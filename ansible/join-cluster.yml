@@ -32,7 +32,7 @@
         - cluster_check.rc != 0
 
     - name: Wait for node to be ready
-      shell: "microk8s kubectl get nodes --no-headers | grep -w Ready"
+      shell: "microk8s kubectl get nodes {{ item }} --no-headers | grep -w Ready"
       register: node_ready
       until: node_ready.rc == 0
       retries: 30
