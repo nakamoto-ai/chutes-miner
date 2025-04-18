@@ -483,7 +483,7 @@
         name: "{{ item }}"
         state: restarted
       loop: "{{ microk8s_services.stdout_lines }}"
-      when: container_runtime.changed
+      #when: container_runtime.changed
 
     - name: Install iptables-persistent
       package:
