@@ -48,3 +48,9 @@ all:
     chutes-4090-2:
       ansible_host: 10.2.155.104
       external_ip: 50.237.5.26
+    #chutes-4090-3:
+    #  ansible_host: 10.2.155.105
+    #  external_ip: 50.237.5.26
+    chutes-4090-x4-0:
+      ansible_host: 10.2.155.106
+      #external_ip: 50.237.5.26
