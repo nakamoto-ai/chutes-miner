@@ -33,24 +33,27 @@ all:
 
   hosts:
     chutes-manager:
-      ansible_host: 10.2.155.101
+      ansible_host: 50.237.5.23
       external_ip: 50.237.5.23
       gpu_enabled: false
       is_primary: true
 
     # 4090 enabled VMs
     chutes-4090-0:
-      ansible_host: 10.2.155.102
+      ansible_host: 50.237.5.24
       external_ip: 50.237.5.24
     chutes-4090-1:
-      ansible_host: 10.2.155.103
+      ansible_host: 50.237.5.25
       external_ip: 50.237.5.25
     chutes-4090-2:
-      ansible_host: 10.2.155.104
+      ansible_host: 50.237.5.26
       external_ip: 50.237.5.26
     #chutes-4090-3:
     #  ansible_host: 10.2.155.105
     #  external_ip: 50.237.5.26
-    chutes-4090-x4-0:
-      ansible_host: 10.2.155.106
+    #chutes-4090-x4-0:
+      #ansible_host: 10.2.155.106
       #external_ip: 50.237.5.26
+    chutes-test-gpu: 
+      ansible_host: 31.192.247.28
+      external_ip: 31.192.247.28
