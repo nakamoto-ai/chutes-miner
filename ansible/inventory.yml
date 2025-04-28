@@ -2,9 +2,7 @@ all:
   vars:
     # This is your SSH public key, e.g. cat ~/.ssh/id_rsa.pub
     ssh_keys:
-      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC47skp+COmqBQep6sNtXi+cMclZvdrvyz7RUqc3vcGNpttUBDwTLMVp66LkwPL5XJjNTWhtcKiBnuG0EPs5ha9/98iIVmXcy2z/PqyjWZLggH7CNQ+iPKOM+3Z6fHIPY72EMtoRdKojwfWBcLGBur7BInI7xFa/3VA9OY79kCKJhUB6IAzuCVWpW56j3BWIBBj/J2wHUYIU71fx95KAHWK6X8zeyMx5xqtmjb8ed1J54n05iDknEVBiznn/gTFLBA5r+KBvNYKXWXsZUjKmirHvCTcOwctW5kKjHqXud1bMfyYAw4E5N/yuhjDfQEqrUDLaQ3Tikd3l0YiFRckKwwV0GTlsCbcMkmwAUwBv0g91p4PkNelV4RjYxAwBn5r8E01xQRIkzmHTPVKiali9B6TQiYgbIgCb5wYHOeRU8NguAvn49S9SxPr3E7tgmZH19eNa7ucmHp6XhHQ9C687IXIZ/ACSBE2vqLlUwLKIP60j0orgEAyUi86Z/lyjim/hoc= trbiv@pop-os"
       - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKUlyTrsmOVsbfaV1C6ttHJ58h1ywm1JGdsIPqnXlRl7 trbiv@pop-os"
-      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDKGh+oJtz1BAEpGErOvDrKoLiW9NPID5TVM7tFyh5gaDlKksvLmBIS/VXNvsdZj27GTAqOzQGZ3SfDz+CRbxmUpQZrZyhrrFM1EFYrwpeCXiQ79Uih+98Y8efWaW/0SEy3qwXonEucpU4epbYAvDNlc5ou+uUJIcYYZ4SbegQGaGwjGq2pMfcEKdexO6Z/OM0cTnrQ7JMzmY3ga1vMl4/rCh0sDbIR6rSTsgnDma4UrnkaL9UNXzK+HnhhvGe8okqxqAOwh/UeS4ruknngstdYjolMxWD5F4q0AwsNf1I59DOw2cVhh1DgcM1HAh25l5J7T2pWNMM2oh/11Rp6D+Tx6M4MNwgZ9TCPkFCgFAalipIdx0XRQY2nTk7WzSOl/Eo56n9/z95VcMpOp+OQaSYNjxy7lJE8PzPmpVmwFMU1R5dkDqjdtE/2DWJYNY/+Seg39qwy+qybOcnDGe99pt9ePBWwOSuMzKlxn+oTf3u8CEzuX2YlOkY/ksxkqySzpFE= satoshi@nakamoto"
     # The username you want to use to login to those machines (and your public key will be added to).
     user: satoshi
     # The initial username to login with, for fresh nodes that may not have your username setup.
