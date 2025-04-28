@@ -1,0 +1,84 @@
+- name: Completely remove WireGuard from all nodes
+  hosts: all
+  become: true
+  tasks:
+    - name: Stop WireGuard service
+      systemd:
+        name: wg-quick@wg0
+        state: stopped
+      ignore_errors: yes
+
+    - name: Disable WireGuard service
+      systemd:
+        name: wg-quick@wg0
+        enabled: no
+      ignore_errors: yes
+
+    - name: Uninstall WireGuard packages
+      apt:
+        name:
+          - wireguard
+          - wireguard-tools
+          - wireguard-dkms
+        state: absent
+        purge: yes
+        autoremove: yes
+
+    - name: Remove WireGuard DKMS module
+      shell: dkms remove wireguard/{{ item }} --all
+      loop:
+        - 1.0.20220627
+        - 1.0.20210914
+      ignore_errors: yes
+
+    - name: Remove WireGuard configuration directory
+      file:
+        path: /etc/wireguard
+        state: absent
+
+    - name: Remove residual WireGuard network interfaces
+      shell: ip link delete wg0
+      ignore_errors: yes
+
+    - name: Remove WireGuard kernel module
+      modprobe:
+        name: wireguard
+        state: absent
+      ignore_errors: yes
+
+    - name: Remove WireGuard module files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /lib/modules/{{ ansible_kernel }}/updates/dkms/wireguard.ko
+        - /lib/modules/{{ ansible_kernel }}/kernel/net/wireguard/wireguard.ko
+      ignore_errors: yes
+
+    - name: Flush iptables (if any WireGuard rules were set)
+      shell: iptables -F && iptables -X
+      ignore_errors: yes
+
+    - name: Check for systemd-networkd service
+      systemd:
+        name: systemd-networkd
+        state: started
+      register: systemd_networkd_check
+      ignore_errors: yes
+
+    - name: Restart systemd-networkd if available
+      systemd:
+        name: systemd-networkd
+        state: restarted
+      when: systemd_networkd_check.status is defined and systemd_networkd_check.status.ActiveState == "active"
+      ignore_errors: yes
+
+    - name: Debug network service status
+      debug:
+        msg: |
+          systemd-networkd: {{ 'Active' if systemd_networkd_check.status is defined and systemd_networkd_check.status.ActiveState == 'active' else 'Not available' }}
+
+    - name: Reboot the machine
+      reboot:
+        reboot_timeout: 300
+      ignore_errors: yes
