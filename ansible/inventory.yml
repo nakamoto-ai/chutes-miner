@@ -8,7 +8,7 @@ all:
     # The username you want to use to login to those machines (and your public key will be added to).
     user: satoshi
     # The initial username to login with, for fresh nodes that may not have your username setup.
-    ansible_user: root
+    ansible_user: ansible
     # The default validator each GPU worker node will be assigned to.
     validator: 5Dt7HZ7Zpw4DppPxFM7Ke3Cm7sDAWhsZXmM5ZAmE7dSVJbcQ
     # By default, no nodes are the primary (CPU node running all the apps, wireguard, etc.) Override this flag exactly once below.
