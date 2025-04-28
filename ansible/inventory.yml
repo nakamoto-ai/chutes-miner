@@ -6,8 +6,9 @@ all:
       - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKUlyTrsmOVsbfaV1C6ttHJ58h1ywm1JGdsIPqnXlRl7 trbiv@pop-os"
       - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDKGh+oJtz1BAEpGErOvDrKoLiW9NPID5TVM7tFyh5gaDlKksvLmBIS/VXNvsdZj27GTAqOzQGZ3SfDz+CRbxmUpQZrZyhrrFM1EFYrwpeCXiQ79Uih+98Y8efWaW/0SEy3qwXonEucpU4epbYAvDNlc5ou+uUJIcYYZ4SbegQGaGwjGq2pMfcEKdexO6Z/OM0cTnrQ7JMzmY3ga1vMl4/rCh0sDbIR6rSTsgnDma4UrnkaL9UNXzK+HnhhvGe8okqxqAOwh/UeS4ruknngstdYjolMxWD5F4q0AwsNf1I59DOw2cVhh1DgcM1HAh25l5J7T2pWNMM2oh/11Rp6D+Tx6M4MNwgZ9TCPkFCgFAalipIdx0XRQY2nTk7WzSOl/Eo56n9/z95VcMpOp+OQaSYNjxy7lJE8PzPmpVmwFMU1R5dkDqjdtE/2DWJYNY/+Seg39qwy+qybOcnDGe99pt9ePBWwOSuMzKlxn+oTf3u8CEzuX2YlOkY/ksxkqySzpFE= satoshi@nakamoto"
     # The username you want to use to login to those machines (and your public key will be added to).
-    user: root # The initial username to login with, for fresh nodes that may not have your username setup.
-    ansible_user: satoshi
+    user: satoshi
+    # The initial username to login with, for fresh nodes that may not have your username setup.
+    ansible_user: root
     # The default validator each GPU worker node will be assigned to.
     validator: 5Dt7HZ7Zpw4DppPxFM7Ke3Cm7sDAWhsZXmM5ZAmE7dSVJbcQ
     # By default, no nodes are the primary (CPU node running all the apps, wireguard, etc.) Override this flag exactly once below.
@@ -34,8 +35,8 @@ all:
 
   hosts:
     chutes-manager:
-      ansible_host: 50.237.5.23
-      external_ip: 50.237.5.23
+      ansible_host: 161.97.117.66
+      external_ip: 161.97.117.66
       gpu_enabled: false
       is_primary: true
 
@@ -43,18 +44,18 @@ all:
     chutes-4090-0:
       ansible_host: 50.237.5.24
       external_ip: 50.237.5.24
-    chutes-4090-1:
-      ansible_host: 50.237.5.25
-      external_ip: 50.237.5.25
-    chutes-4090-2:
-      ansible_host: 50.237.5.26
-      external_ip: 50.237.5.26
+    #chutes-4090-1:
+    #ansible_host: 50.237.5.25
+    #external_ip: 50.237.5.25
+    #chutes-4090-2:
+    #ansible_host: 50.237.5.26
+    #external_ip: 50.237.5.26
     #chutes-4090-3:
     #  ansible_host: 10.2.155.105
     #  external_ip: 50.237.5.26
     #chutes-4090-x4-0:
-      #ansible_host: 10.2.155.106
-      #external_ip: 50.237.5.26
-    chutes-test-gpu: 
+    #ansible_host: 10.2.155.106
+    #external_ip: 50.237.5.26
+    chutes-test-gpu:
       ansible_host: 31.192.247.28
       external_ip: 31.192.247.28
