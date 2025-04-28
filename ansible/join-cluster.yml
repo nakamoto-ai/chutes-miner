@@ -15,7 +15,7 @@
 
     - name: Extract join string
       set_fact:
-        join_string: "{{ join_command.stdout | regex_search('microk8s join 10.2[^ ]+') }}"
+        join_string: "{{ join_command.stdout | regex_search('microk8s join 192.168[^ ]+') }}"
       when: is_primary | bool
 
     - name: Share join command with other plays
