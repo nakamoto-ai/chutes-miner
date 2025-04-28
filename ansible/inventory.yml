@@ -32,11 +32,13 @@ all:
     skip_cuda: false
     # Flag to enable/disable IPv6. Some hosts may require IPv6 to be on.
     ipv6_enabled: true
+    wireguard_mtu: 1380
 
   hosts:
     chutes-manager:
       ansible_host: 161.97.117.66
       external_ip: 161.97.117.66
+      wireguard_ip: 192.168.0.1
       gpu_enabled: false
       is_primary: true
 
@@ -44,6 +46,7 @@ all:
     chutes-4090-0:
       ansible_host: 50.237.5.24
       external_ip: 50.237.5.24
+      wireguard_ip: 192.168.0.3
     #chutes-4090-1:
     #ansible_host: 50.237.5.25
     #external_ip: 50.237.5.25
@@ -59,3 +62,4 @@ all:
     chutes-test-gpu:
       ansible_host: 31.192.247.28
       external_ip: 31.192.247.28
+      wireguard_ip: 192.168.0.8
