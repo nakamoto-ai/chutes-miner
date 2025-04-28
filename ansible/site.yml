@@ -35,7 +35,7 @@
       file:
         path: "{{ item }}"
         state: directory
-        mode: "0700"
+        mode: '0700'
       with_items:
         - "/home/{{ username }}/.ssh"
         - "/root/.ssh"
@@ -58,8 +58,8 @@
     - name: Add user to sudoers
       lineinfile:
         path: /etc/sudoers
-        line: "{{ username }} ALL=(ALL) NOPASSWD:ALL"
-        validate: "visudo -cf %s"
+        line: '{{ username }} ALL=(ALL) NOPASSWD:ALL'
+        validate: 'visudo -cf %s'
 
     - name: Remove old containerd if exists
       apt:
@@ -99,8 +99,8 @@
         regexp: "{{ item }}"
         state: absent
       with_items:
-        - "Acquire::http::Proxy"
-        - "Acquire::https::Proxy"
+        - 'Acquire::http::Proxy'
+        - 'Acquire::https::Proxy'
       when: ansible_path_apt_conf.stat.exists is defined and ansible_path_apt_conf.stat.exists
 
     - name: Unset all snap proxy settings
@@ -229,7 +229,7 @@
     - name: Set NVIDIA device permissions
       file:
         path: "{{ item }}"
-        mode: "0666"
+        mode: '0666'
       with_fileglob:
         - /dev/nvidia*
         - /dev/nvidiactl
@@ -276,17 +276,17 @@
     - name: Ensure preserve_hostname is set to true
       lineinfile:
         path: /etc/cloud/cloud.cfg
-        regexp: "^preserve_hostname:"
-        line: "preserve_hostname: true"
+        regexp: '^preserve_hostname:'
+        line: 'preserve_hostname: true'
         create: true
         owner: root
         group: root
-        mode: "0644"
+        mode: '0644'
 
     - name: Create hostname script
       copy:
         dest: /usr/local/bin/set-hostname.sh
-        mode: "0755"
+        mode: '0755'
         content: |
           #!/bin/bash
           hostnamectl set-hostname "{{ inventory_hostname }}"
@@ -327,8 +327,8 @@
         - name: Configure NTP servers
           lineinfile:
             path: /etc/systemd/timesyncd.conf
-            regexp: "^#?NTP="
-            line: "NTP=pool.ntp.org"
+            regexp: '^#?NTP='
+            line: 'NTP=pool.ntp.org'
 
         - name: Force time synchronization
           shell: |
@@ -419,7 +419,7 @@
           file:
             path: "/home/{{ username }}/.kube"
             state: directory
-            mode: "0755"
+            mode: '0755'
             owner: "{{ username }}"
             group: "{{ username }}"
 
@@ -431,7 +431,7 @@
         - name: Set kubeconfig permissions
           file:
             path: "/home/{{ username }}/.kube/config"
-            mode: "0600"
+            mode: '0600'
             owner: "{{ username }}"
             group: "{{ username }}"
 
@@ -439,7 +439,7 @@
       file:
         path: /var/snap/microk8s/current/args/certs.d
         state: directory
-        mode: "0755"
+        mode: '0755'
 
     - name: Set registry hostname
       set_fact:
@@ -449,19 +449,19 @@
       file:
         path: "/var/snap/microk8s/current/args/certs.d/{{ registry_hostname }}:{{ registry_port }}"
         state: directory
-        mode: "0755"
+        mode: '0755'
 
     - name: Create hosts.toml for registry
       template:
         src: hosts.toml.j2
         dest: "/var/snap/microk8s/current/args/certs.d/{{ registry_hostname }}:{{ registry_port }}/hosts.toml"
-        mode: "0644"
+        mode: '0644'
 
     - name: Update DNS resolution config
       template:
         src: resolved.conf.j2
         dest: "/etc/systemd/resolved.conf"
-        mode: "0644"
+        mode: '0644'
 
     - name: Restart systemd-resolved
       systemd:
@@ -525,7 +525,7 @@
         name: "{{ item }}"
         state: restarted
       loop: "{{ microk8s_services.stdout_lines }}"
-      #when: container_runtime.changed
+      when: container_runtime.changed
 
     - name: Install iptables-persistent
       package:
@@ -535,12 +535,12 @@
         state: present
       when: is_primary | bool
 
-    - name: Allow forwarding from pod interfaces (Calico vxlan + cali)
-      ansible.builtin.shell: |
-        iptables -C FORWARD -i cali+ -j ACCEPT || iptables -A FORWARD -i cali+ -j ACCEPT
-        iptables -C FORWARD -i vxlan.calico -j ACCEPT || iptables -A FORWARD -i vxlan.calico -j ACCEPT
-      args:
-        executable: /bin/bash
+    - name: Add forwarding rule
+      iptables:
+        chain: FORWARD
+        in_interface: wg0
+        jump: ACCEPT
+        state: present
       when: is_primary | bool
 
     - name: Get network interface information
@@ -559,14 +559,6 @@
       loop: "{{ ethernet_interfaces.stdout_lines }}"
       when: is_primary | bool
 
-    - name: Add MASQUERADE rule for pod network
-      ansible.builtin.shell: |
-        iptables -t nat -C POSTROUTING -s 10.1.0.0/16 ! -d 10.1.0.0/16 -j MASQUERADE || \
-        iptables -t nat -A POSTROUTING -s 10.1.0.0/16 ! -d 10.1.0.0/16 -j MASQUERADE
-      args:
-        executable: /bin/bash
-      when: is_primary | bool
-
     - name: Save iptables rules
       shell: |
         netfilter-persistent save
@@ -576,7 +568,7 @@
     - name: Enable IP forwarding
       sysctl:
         name: net.ipv4.ip_forward
-        value: "1"
+        value: '1'
         state: present
         sysctl_set: yes
         reload: yes
