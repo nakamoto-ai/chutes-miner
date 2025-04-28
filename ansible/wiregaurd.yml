@@ -87,7 +87,7 @@
       template:
         src: wg0-primary.conf.j2
         dest: /etc/wireguard/wg0.conf
-        mode: '0600'
+        mode: "0600"
       register: wireguard_primary
 
     - name: Create Wireguard config for worker
@@ -95,7 +95,7 @@
       template:
         src: wg0-worker.conf.j2
         dest: /etc/wireguard/wg0.conf
-        mode: '0600'
+        mode: "0600"
       register: wireguard_worker
 
     - name: Enable and start Wireguard
