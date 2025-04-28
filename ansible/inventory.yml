@@ -2,6 +2,7 @@ all:
   vars:
     # This is your SSH public key, e.g. cat ~/.ssh/id_rsa.pub
     ssh_keys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC47skp+COmqBQep6sNtXi+cMclZvdrvyz7RUqc3vcGNpttUBDwTLMVp66LkwPL5XJjNTWhtcKiBnuG0EPs5ha9/98iIVmXcy2z/PqyjWZLggH7CNQ+iPKOM+3Z6fHIPY72EMtoRdKojwfWBcLGBur7BInI7xFa/3VA9OY79kCKJhUB6IAzuCVWpW56j3BWIBBj/J2wHUYIU71fx95KAHWK6X8zeyMx5xqtmjb8ed1J54n05iDknEVBiznn/gTFLBA5r+KBvNYKXWXsZUjKmirHvCTcOwctW5kKjHqXud1bMfyYAw4E5N/yuhjDfQEqrUDLaQ3Tikd3l0YiFRckKwwV0GTlsCbcMkmwAUwBv0g91p4PkNelV4RjYxAwBn5r8E01xQRIkzmHTPVKiali9B6TQiYgbIgCb5wYHOeRU8NguAvn49S9SxPr3E7tgmZH19eNa7ucmHp6XhHQ9C687IXIZ/ACSBE2vqLlUwLKIP60j0orgEAyUi86Z/lyjim/hoc= trbiv@pop-os"
       - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKUlyTrsmOVsbfaV1C6ttHJ58h1ywm1JGdsIPqnXlRl7 trbiv@pop-os"
     # The username you want to use to login to those machines (and your public key will be added to).
     user: satoshi
