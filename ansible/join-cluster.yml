@@ -54,6 +54,8 @@
 
     - name: Join cluster as worker node
       shell: "{{ hostvars['localhost']['join_command'] | replace('\n', '') }} --worker --skip-verify"
+      register: join_result
+      become: yes
       when:
         - not is_primary | bool
         - cluster_check.rc != 0

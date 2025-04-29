@@ -24,13 +24,6 @@
         purge: yes
         autoremove: yes
 
-    - name: Remove WireGuard DKMS module
-      shell: dkms remove wireguard/{{ item }} --all
-      loop:
-        - 1.0.20220627
-        - 1.0.20210914
-      ignore_errors: yes
-
     - name: Remove WireGuard configuration directory
       file:
         path: /etc/wireguard
