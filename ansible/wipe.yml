@@ -2,8 +2,12 @@
   hosts: all
   become: true
   tasks:
-    - name: remove microk8s
-      command: sudo snap remove microk8s
+    - name: Reset microk8s
+      command: microk8s reset
+      ignore_errors: yes
+
+    - name: Remove microk8s
+      command: snap remove microk8s
       ignore_errors: yes
 
     - name: Stop WireGuard service
