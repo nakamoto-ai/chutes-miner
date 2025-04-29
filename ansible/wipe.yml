@@ -1,7 +1,11 @@
-- name: Completely remove WireGuard from all nodes
+- name: Completely remove WireGuard and Kubernetes from all nodes
   hosts: all
   become: true
   tasks:
+    - name: remove microk8s
+      command: sudo snap remove microk8s
+      ignore_errors: yes
+
     - name: Stop WireGuard service
       systemd:
         name: wg-quick@wg0
@@ -14,12 +18,13 @@
         enabled: no
       ignore_errors: yes
 
-    - name: Uninstall WireGuard packages
+    - name: Uninstall packages
       apt:
         name:
           - wireguard
           - wireguard-tools
           - wireguard-dkms
+          - redis
         state: absent
         purge: yes
         autoremove: yes
