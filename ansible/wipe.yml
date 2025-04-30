@@ -30,9 +30,20 @@
           - wireguard-dkms
           - redis-server
           - postgresql
+          - docker
+          - docker-ce
         state: absent
         purge: yes
         autoremove: yes
+
+    - name: Remove docker files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /var/lib/docker/
+        - /var/lib/containerd
+        - /etc/docker
 
     - name: Remove redis files
       file:
