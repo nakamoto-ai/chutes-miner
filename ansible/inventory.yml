@@ -41,26 +41,18 @@ all:
       gpu_enabled: false
       is_primary: true
 
-    # 4090 enabled VMs
-    chutes-4090-x4-0:
-      ansible_host: 50.237.5.26
-      external_ip: 50.237.5.26
-      wireguard_ip: 192.168.0.7
+    # 4090 x4
     chutes-4090-x4-1:
       ansible_host: 50.237.5.23
       external_ip: 50.237.5.23
       wireguard_ip: 192.168.0.3
-    chutes-test-gpu:
+    chutes-4090-x4-2:
+      ansible_host: 50.237.5.24
+      external_ip: 50.237.5.24
+      wireguard_ip: 192.168.0.4
+
+    # single 4090
+    chutes-4090-x1-1:
       ansible_host: 31.192.247.28
       external_ip: 31.192.247.28
-      wireguard_ip: 192.168.0.8
-
-    # old inventory
-    #chutes-4090-1:
-    #  ansible_host: 50.237.5.24
-    #  external_ip: 50.237.5.24
-    #  wireguard_ip: 192.168.0.4
-    #chutes-4090-2:
-    #  ansible_host: 50.237.5.25
-    #  external_ip: 50.237.5.25
-    #  wireguard_ip: 192.168.0.5
+      wireguard_ip: 192.168.0.5
