@@ -28,10 +28,28 @@
           - wireguard
           - wireguard-tools
           - wireguard-dkms
-          - redis
+          - redis-server
+          - postgresql
         state: absent
         purge: yes
         autoremove: yes
+
+    - name: Remove redis files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/redis/
+        - /var/lib/redis/
+
+    - name: Remove redis files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /var/lib/postgresql/
+        - /var/log/postgresql/
+        - /etc/postgresql/
 
     - name: Remove WireGuard configuration directory
       file:
