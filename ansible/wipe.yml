@@ -32,6 +32,7 @@
           - postgresql
           - docker
           - docker-ce
+          - docker-compose
         state: absent
         purge: yes
         autoremove: yes
