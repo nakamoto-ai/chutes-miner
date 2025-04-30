@@ -4,9 +4,7 @@ cache:
   max_age_days: 30
   max_size_gb: 500
   overrides:
-# Add any per-node cache size (in GB) overrides here, e.g.:
-#    chutes-miner-gpu-0: 1000
-#    chutes-miner-gpu-1: 1500
+    chutes-4090-x1-1: 600
 
 validators:
   defaultRegistry: registry.chutes.ai
