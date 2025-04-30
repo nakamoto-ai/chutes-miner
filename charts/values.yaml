@@ -4,7 +4,7 @@ cache:
   max_age_days: 30
   max_size_gb: 500
   overrides:
-    chutes-4090-x1-1: 600
+    chutes-4090-x1-1: 700
 
 validators:
   defaultRegistry: registry.chutes.ai
