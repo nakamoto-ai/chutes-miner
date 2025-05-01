@@ -25,11 +25,23 @@ from api.exceptions import DeploymentFailure
 import api.k8s as k8s
 
 
+## patch attempt
+async def recreate_code():
+    async with get_session() as session:
+        result = (await session.execute(select(Chute))).unique().scalars()
+        for chute in result:
+            print(f"(re) creating code configmap: {chute.chute_id=} {chute.version=}")
+            await k8s.create_code_config_map(chute)
+
+
 class Gepetto:
     def __init__(self):
         """
         Constructor.
         """
+
+        asyncio.run(recreate_code())
+
         self.pubsub = RedisListener()
         self.remote_chutes = {validator.hotkey: {} for validator in settings.validators}
         self.remote_images = {validator.hotkey: {} for validator in settings.validators}
