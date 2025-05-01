@@ -40,7 +40,6 @@ class Gepetto:
         Constructor.
         """
 
-        asyncio.run(recreate_code())
 
         self.pubsub = RedisListener()
         self.remote_chutes = {validator.hotkey: {} for validator in settings.validators}
@@ -1422,6 +1421,7 @@ class Gepetto:
 
 async def main():
     gepetto = Gepetto()
+    await recreate_code() # patch: recret the config map before running gepetto strat
     await gepetto.run()
 
 
