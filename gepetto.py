@@ -39,8 +39,6 @@ class Gepetto:
         """
         Constructor.
         """
-
-
         self.pubsub = RedisListener()
         self.remote_chutes = {validator.hotkey: {} for validator in settings.validators}
         self.remote_images = {validator.hotkey: {} for validator in settings.validators}
