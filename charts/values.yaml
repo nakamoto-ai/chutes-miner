@@ -9,7 +9,7 @@ cache:
     chutes-4090-x4-1:
       max_size_gb: 3200
     chutes-4090-x4-2:
-      max_size_gb: 13000
+      max_size_gb: 13500
 
 validators:
   defaultRegistry: registry.chutes.ai
