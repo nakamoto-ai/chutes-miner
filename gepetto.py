@@ -379,10 +379,8 @@ class Gepetto:
 
         # seperate deployed vs undeployed so we can optimize toward unique count
         undeployed_chutes = [x for x in chute_values if x[3] == 0]
-        deployed_chutes = [x for x in chute_values if x[3] > 0]
 
         logger.info(f"found {len(undeployed_chutes)} viable undeployed chutes")
-        logger.info(f"found {len(deployed_chutes)} viable undeployed chutes")
 
         if undeployed_chutes:
             undeployed_chutes.sort(key=lambda x: x[2], reverse=True)
@@ -405,8 +403,8 @@ class Gepetto:
             else:
                 logger.warning(f"Could not load chute {best_chute_id=} for validator {best_validator}")
         else:
-            deployed_chutes.sort(key=lambda x: x[2], reverse=True)
-            best_validator, best_chute_id, best_value, best_deploy_metric = deployed_chutes[0]
+            chute_values.sort(key=lambda x: x[2], reverse=True)
+            best_validator, best_chute_id, best_value, best_deploy_metric = chute_values[0]
             logger.info(
                 f"Attempting to scale highest-value chute: {best_chute_id=} "
                 f"(value={best_value:.2f}, local_deploy_metric={best_deploy_metric})"
