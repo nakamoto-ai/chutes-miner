@@ -318,6 +318,9 @@ class Gepetto:
                     local_count = await self.count_deployments(
                         chute_id, chute_info["version"], validator
                     )
+                    if local_count >= 1:
+                        logger.info(f"Already running this chute, skippping to increase unique count {chute_id=} {chute_name}")
+                        continue
                     if local_count >= 3:
                         logger.info(f"Already have max instances of {chute_id=} {chute_name}")
                         continue
