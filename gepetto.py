@@ -902,9 +902,7 @@ class Gepetto:
         """
         Find the optimal server for scaling up a chute deployment.
         """
-        # TEMPORARY PATCH:
-        # If the chute is expecting 4 4090s (gpu_count > 2 in your code) and includes "4090"
-        # in supported_gpus, skip it entirely.
+        # TEMPORARY PATCH: x16 to x1 riser cables are killing our bandwidth and chutes that need it will continually fail
         if "4090" in list(chute.supported_gpus) and int(chute.gpu_count) > 2:
             logger.warning(f"Will not attempt to scale chute that requires 4 4090s {chute.chute_id=} {chute.supported_gpus=} {chute.gpu_count=}")
             return None
