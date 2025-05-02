@@ -336,6 +336,7 @@ class Gepetto:
                         )
                         continue
 
+
                     # If we have all deployments already (no other miner has this) then no need to scale.
                     total_count = metrics["instance_count"]
                     if local_count and local_count >= total_count:
@@ -901,6 +902,13 @@ class Gepetto:
         """
         Find the optimal server for scaling up a chute deployment.
         """
+        # TEMPORARY PATCH:
+        # If the chute is expecting 4 4090s (gpu_count > 2 in your code) and includes "4090"
+        # in supported_gpus, skip it entirely.
+        if "4090" in list(chute.supported_gpus) and int(chute.gpu_count) > 2:
+            logger.info("Skipping chute that requires 4 4090s.")
+            return None
+
         if chute.ban_reason:
             logger.warning(f"Will not scale up banned chute {chute.chute_id=}: {chute.ban_reason=}")
             return None
