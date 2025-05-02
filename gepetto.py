@@ -381,6 +381,8 @@ class Gepetto:
         undeployed_chutes = [x for x in chute_values if x[3] == 0]
 
         logger.info(f"found {len(undeployed_chutes)} viable undeployed chutes")
+        for chute in undeployed_chutes:
+            logger.info(f"undeployed: {chute}")
 
         if undeployed_chutes:
             undeployed_chutes.sort(key=lambda x: x[2], reverse=True)
