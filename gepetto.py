@@ -906,12 +906,12 @@ class Gepetto:
         # If the chute is expecting 4 4090s (gpu_count > 2 in your code) and includes "4090"
         # in supported_gpus, skip it entirely.
         if "4090" in list(chute.supported_gpus) and int(chute.gpu_count) > 2:
-            logger.info("Skipping chute that requires 4 4090s.")
+            logger.warning(f"Will not attempt to scale chute that requires 4 4090s {chute.chute_id=} {chute.supported_gpus=} {chute.gpu_count=}")
             return None
-
         if chute.ban_reason:
             logger.warning(f"Will not scale up banned chute {chute.chute_id=}: {chute.ban_reason=}")
             return None
+
         supported_gpus = list(chute.supported_gpus)
         if "h200" in supported_gpus and set(supported_gpus) - set(["h200"]):
             supported_gpus = list(set(supported_gpus) - set(["h200"]))
