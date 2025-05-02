@@ -320,8 +320,9 @@ class Gepetto:
                     )
 
                     if not local_count:
-                        logger.info(f"Failed to get local count for {chute_id=} {chute_name}")
-                        continue
+                        logger.info(f"Failed to get local count for {chute_id=} {chute_name}. defaulting to 0")
+                        local_count = 0
+
 
                     if local_count >= 3:
                         logger.info(f"Already have max instances of {chute_id=} {chute_name}")
