@@ -380,6 +380,9 @@ class Gepetto:
         undeployed_chutes = [x for x in chute_values if x[3] == 0]
         deployed_chutes = [x for x in chute_values if x[3] > 0]
 
+        logger.info(f"found {len(undeployed_chutes)} viable undeployed chutes")
+        logger.info(f"found {len(deployed_chutes)} viable undeployed chutes")
+
         if undeployed_chutes:
             undeployed_chutes.sort(key=lambda x: x[2], reverse=True)
             best_validator, best_chute_id, best_value, best_deploy_metric = undeployed_chutes[0]
