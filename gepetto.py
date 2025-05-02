@@ -318,9 +318,11 @@ class Gepetto:
                     local_count = await self.count_deployments(
                         chute_id, chute_info["version"], validator
                     )
-                    if local_count >= 1:
-                        logger.info(f"Already running this chute, skippping to increase unique count {chute_id=} {chute_name}")
+
+                    if not local_count:
+                        logger.info(f"Failed to get local count for {chute_id=} {chute_name}")
                         continue
+
                     if local_count >= 3:
                         logger.info(f"Already have max instances of {chute_id=} {chute_name}")
                         continue
@@ -363,7 +365,8 @@ class Gepetto:
                         f"on server {potential_server.name}, {chute_value=} "
                         f"{local_count=} {total_count=}"
                     )
-                    chute_values.append((validator, chute_id, chute_value))
+
+                    chute_values.append((validator, chute_id, chute_value, local_count))
 
                 except Exception as e:
                     logger.error(f"Error processing chute {chute_id}: {e}")
@@ -373,21 +376,50 @@ class Gepetto:
             logger.info("No benefit in scaling, or no ability to do so...")
             return
 
-        # Sort by value and attempt to deploy the highest value chute
-        chute_values.sort(key=lambda x: x[2], reverse=True)
-        best_validator, best_chute_id, best_value = chute_values[0]
-        if (
-            chute := await self.load_chute(
+        # seperate deployed vs undeployed so we can optimize toward unique count
+        undeployed_chutes = [x for x in chute_values if x[3] == 0]
+        deployed_chutes = [x for x in chute_values if x[3] > 0]
+
+        if undeployed_chutes:
+            undeployed_chutes.sort(key=lambda x: x[2], reverse=True)
+            best_validator, best_chute_id, best_value, best_deploy_metric = undeployed_chutes[0]
+            logger.info(
+                f"Attempting to add a new unique chute: {best_chute_id=} "
+                f"(value={best_value:.2f}, local_deploy_metric={best_deploy_metric})"
+            )
+            # Load chute from the DB
+            chute = await self.load_chute(
                 best_chute_id,
                 self.remote_chutes[best_validator][best_chute_id]["version"],
                 best_validator,
             )
-        ) is not None:
-            current_count = await self.count_deployments(
-                best_chute_id, chute.version, best_validator
+            if chute:
+                current_count = await self.count_deployments(
+                    best_chute_id, chute.version, best_validator
+                )
+                await self.scale_chute(chute, current_count + 1, preempt=False)
+            else:
+                logger.warning(f"Could not load chute {best_chute_id=} for validator {best_validator}")
+        else:
+            deployed_chutes.sort(key=lambda x: x[2], reverse=True)
+            best_validator, best_chute_id, best_value, best_deploy_metric = deployed_chutes[0]
+            logger.info(
+                f"Attempting to scale highest-value chute: {best_chute_id=} "
+                f"(value={best_value:.2f}, local_deploy_metric={best_deploy_metric})"
             )
-            logger.info(f"Scaling up {best_chute_id} for validator {best_validator}")
-            await self.scale_chute(chute, current_count + 1, preempt=False)
+            # Load chute from the DB
+            chute = await self.load_chute(
+                best_chute_id,
+                self.remote_chutes[best_validator][best_chute_id]["version"],
+                best_validator,
+            )
+            if chute:
+                current_count = await self.count_deployments(
+                    best_chute_id, chute.version, best_validator
+                )
+                await self.scale_chute(chute, current_count + 1, preempt=False)
+            else:
+                logger.warning(f"Could not load chute {best_chute_id=} for validator {best_validator}")
 
     async def autoscaler(self):
         """
