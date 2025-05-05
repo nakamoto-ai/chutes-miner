@@ -56,3 +56,8 @@ all:
       ansible_host: 31.192.247.28
       external_ip: 31.192.247.28
       wireguard_ip: 192.168.0.5
+
+    chutes-l40s-x8-1:
+      ansible_host: 216.81.245.51
+      external_ip: 216.81.245.51
+      wireguard_ip: 192.168.0.6
