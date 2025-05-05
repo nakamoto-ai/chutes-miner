@@ -318,9 +318,8 @@ class Gepetto:
                     local_count = await self.count_deployments(
                         chute_id, chute_info["version"], validator
                     )
-
                     if not local_count:
-                        logger.info(f"Failed to get local count for {chute_id=} {chute_name}. defaulting to 0")
+                        logger.debug(f"Failed to get local count for {chute_id=} {chute_name}. defaulting to 0")
                         local_count = 0
 
 
