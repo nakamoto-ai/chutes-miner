@@ -357,8 +357,6 @@ class Gepetto:
                         logger.info(f"No viable server to scale {chute_id=} {chute_name}")
                         continue
 
-                    logger.info(f"found potential server {potential_server.name} for chute: {chute.name}")
-                    # due to bandwidth, some chutes are failing when deployed on 4x 4090 machines
                     failing_chutes = [
                         'unsloth/Mistral-Nemo-Instruct-2407'
                     ]
@@ -369,7 +367,7 @@ class Gepetto:
 
                     # Check if the potential server is in the list of handicapped servers and if the chute is in the list of failing chutes
                     if (potential_server.name in handicapped_4090_servers) and (chute.name in failing_chutes):
-                        logger.info(f"potential server is handicapped, chute inference will fail")
+                        logger.info(f"potential server {potential_server.name} is handicapped, chute inference for {chute.name} will fail")
                         continue
 
                     # Calculate value ratio
