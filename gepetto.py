@@ -391,11 +391,11 @@ class Gepetto:
             return
 
         undeployed_chutes = [ch for ch in chute_values if ch[3] == 0]
-        chute_values.sort(key=lambda x: x[2], reverse=True)
-
         chutes_to_scale = chute_values
         if undeployed_chutes:
             chutes_to_scale = undeployed_chutes
+
+        chutes_to_scale.sort(key=lambda x: x[2], reverse=True)
 
         best_validator, best_chute_id, best_value, best_deploy_metric = chutes_to_scale[0]
         logger.info(
