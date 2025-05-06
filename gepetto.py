@@ -354,7 +354,7 @@ class Gepetto:
                     # See if we have a server that could even handle it.
                     potential_server = await self.optimal_scale_up_server(chute)
                     if not potential_server:
-                        logger.info(f"No viable server to scale {chute_id=} {chute_name}")
+                        logger.info(f"No viable server to scale {chute_id=} {chute_name}, requires: {chute.supported_gpus} {chute.gpu_count}")
                         continue
 
                     failing_chutes = [
