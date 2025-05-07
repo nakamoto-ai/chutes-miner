@@ -365,6 +365,15 @@ class Gepetto:
                         'chutes-4090-x4-2',
                     ]
 
+                    # i just dont want to run these
+                    blacklisted_chutes = [
+                       'hugging-quants/Meta-Llama-3.1-70B-Instruct-AWQ-INT4'
+                    ]
+
+                    if chute.name in blacklisted_chutes: 
+                        logger.info(f"Chute {chute.name} is blacklisted. Skipping")
+                        continue
+
                     # Check if the potential server is in the list of handicapped servers and if the chute is in the list of failing chutes
                     if (potential_server.name in handicapped_4090_servers) and (chute.name in failing_chutes):
                         logger.info(f"potential server {potential_server.name} is handicapped, chute inference for {chute.name} will fail")
