@@ -390,16 +390,9 @@ class Gepetto:
             logger.info("No benefit in scaling, or no ability to do so...")
             return
 
-        undeployed_chutes = [ch for ch in chute_values if ch[3] == 0]
-        logger.info(f"Undeployed chutes: {undeployed_chutes}")
-        logger.info(f"All viable chutes: {chute_values}")
-        chutes_to_scale = chute_values
-        if undeployed_chutes:
-            chutes_to_scale = undeployed_chutes
+        chute_values.sort(key=lambda x: x[2], reverse=True)
 
-        chutes_to_scale.sort(key=lambda x: x[2], reverse=True)
-
-        best_validator, best_chute_id, best_value, best_deploy_metric = chutes_to_scale[0]
+        best_validator, best_chute_id, best_value, best_deploy_metric = chute_values[0]
         logger.info(
             f"Attempting to scale highest-value chute: {best_chute_id=} "
             f"(value={best_value:.2f}, local_deploy_metric={best_deploy_metric})"
