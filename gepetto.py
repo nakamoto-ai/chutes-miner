@@ -317,11 +317,7 @@ class Gepetto:
                     # Count how many deployments we already have.
                     local_count = await self.count_deployments(
                         chute_id, chute_info["version"], validator
-                    )
-                    if not local_count:
-                        logger.debug(f"Failed to get local count for {chute_id=} {chute_name}. defaulting to 0")
-                        local_count = 0
-
+                    ) or 0
 
                     if local_count >= 3:
                         logger.info(f"Already have max instances of {chute_id=} {chute_name}")
@@ -334,7 +330,6 @@ class Gepetto:
                             f"No metrics for {chute_id=} {chute_name}, scaling would be unproductive..."
                         )
                         continue
-
 
                     # If we have all deployments already (no other miner has this) then no need to scale.
                     total_count = metrics["instance_count"]
@@ -370,7 +365,7 @@ class Gepetto:
                        'hugging-quants/Meta-Llama-3.1-70B-Instruct-AWQ-INT4'
                     ]
 
-                    if chute.name in blacklisted_chutes: 
+                    if chute.name in blacklisted_chutes:
                         logger.info(f"Chute {chute.name} is blacklisted. Skipping")
                         continue
 
