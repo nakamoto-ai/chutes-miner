@@ -44,7 +44,10 @@ class Gepetto:
         self.remote_images = {validator.hotkey: {} for validator in settings.validators}
         self.remote_instances = {validator.hotkey: {} for validator in settings.validators}
         self.remote_nodes = {validator.hotkey: {} for validator in settings.validators}
-        self.remote_metrics = {validator.hotkey: {} for validator in settings.validators} self._scale_lock = asyncio.Lock() self.setup_handlers()
+        self.remote_metrics = {validator.hotkey: {} for validator in settings.validators} 
+        self._scale_lock = asyncio.Lock() 
+        self.setup_handlers()
+
     def setup_handlers(self):
         """
         Configure the various event listeners/handlers.
