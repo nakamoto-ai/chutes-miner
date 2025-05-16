@@ -44,8 +44,8 @@ class Gepetto:
         self.remote_images = {validator.hotkey: {} for validator in settings.validators}
         self.remote_instances = {validator.hotkey: {} for validator in settings.validators}
         self.remote_nodes = {validator.hotkey: {} for validator in settings.validators}
-        self.remote_metrics = {validator.hotkey: {} for validator in settings.validators} 
-        self._scale_lock = asyncio.Lock() 
+        self.remote_metrics = {validator.hotkey: {} for validator in settings.validators}
+        self._scale_lock = asyncio.Lock()
         self.setup_handlers()
 
     def setup_handlers(self):
@@ -346,6 +346,8 @@ class Gepetto:
                         else metrics["total_usage_usd"] / (total_count + 1)
                     )
 
+                    total_compute_time = metrics["total_compute_time"]
+
                     # See if we have a server that could even handle it.
                     potential_server = await self.optimal_scale_up_server(chute)
                     if not potential_server:
@@ -375,9 +377,11 @@ class Gepetto:
                         continue
 
                     # Calculate value ratio
-                    chute_value = potential_gain / (potential_server.hourly_cost * chute.gpu_count)
+                    #chute_value = potential_gain / (potential_server.hourly_cost * chute.gpu_count)
+                    chute_value = total_compute_time
                     logger.info(
-                        f"Estimated {potential_gain=} for name={chute_name} "
+                        f"Estimated {potential_gain=} "
+                        f"from {total_compute_time=} for name={chute_name} "
                         f"chute_id={chute_info['chute_id']} on {validator=}, "
                         f"optimal server hourly cost={potential_server.hourly_cost} "
                         f"on server {potential_server.name}, {chute_value=} "
@@ -393,7 +397,6 @@ class Gepetto:
         if not chute_values:
             logger.info("No benefit in scaling, or no ability to do so...")
             return
-
         undeployed_chutes = [ch for ch in chute_values if ch[3] == 0]
         logger.info(f"Undeployed chutes: {undeployed_chutes}")
         logger.info(f"All viable chutes: {chute_values}")
