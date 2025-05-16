@@ -398,8 +398,8 @@ class Gepetto:
         logger.info(f"Undeployed chutes: {undeployed_chutes}")
         logger.info(f"All viable chutes: {chute_values}")
         chutes_to_scale = chute_values
-        #if undeployed_chutes:
-            #chutes_to_scale = undeployed_chutes
+        if undeployed_chutes:
+            chutes_to_scale = undeployed_chutes
 
         chutes_to_scale.sort(key=lambda x: x[2], reverse=True)
 
