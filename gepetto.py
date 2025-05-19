@@ -365,7 +365,7 @@ class Gepetto:
                     # i just dont want to run these
                     blacklisted_chutes = [
                        'hugging-quants/Meta-Llama-3.1-70B-Instruct-AWQ-INT4',
-                       'chutesai/chroma'
+                       'chutes/chroma'
                     ]
 
                     if chute.name in blacklisted_chutes:
