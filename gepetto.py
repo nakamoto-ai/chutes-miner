@@ -377,6 +377,11 @@ class Gepetto:
                         logger.info(f"potential server {potential_server.name} is handicapped, chute inference for {chute.name} will fail")
                         continue
 
+                    if (chute.gpu_count > potential_server.gpu_count):
+                        logger.info(f"Skipping {chute.name=} becuase it doesnt fill up {potential_server.name}")
+                        continue
+
+
                     # Calculate value ratio
                     chute_value = potential_gain / (potential_server.hourly_cost * chute.gpu_count)
                     #chute_value = total_compute_time
